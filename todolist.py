@@ -1,121 +1,125 @@
-
-import tkinter
-import random
-
-window = tkinter.Tk()
-
-window.configure(bg='#333333')
-
-window.title('My To Do List')
-
-window.geometry('350x450')
-
-tasks = []
+import tkinter as tk
+from tkinter import messagebox
 
 
+class ToDoApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("To-Do List App")
+        self.root.geometry("400x400")
+        
+        # Configure root grid
+        self.root.grid_rowconfigure(1, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)
+        
+        # Create frame
+        self.frame = tk.Frame(root)
+        self.frame.grid(row=1, column=0, pady=10, padx=10, sticky='nsew')
+        
+        # Configure frame grid
+        self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid_columnconfigure(0, weight=1)
+        
+        # Create listbox
+        self.listbox = tk.Listbox(
+            self.frame,
+            width=50,
+            height=10,
+            bd=0,
+            selectbackground="#a6a6a6"
+        )
+        self.listbox.grid(row=0, column=0, sticky='nsew')
+        
+        
+        # Create entry box
+        self.entry = tk.Entry(
+            root,
+            font=('arial', 15)
+        )
+        self.entry.grid(row=0, column=0, pady=10, padx=10, sticky='ew')
+        
+        # Create button frame
+        self.button_frame = tk.Frame(root)
+        self.button_frame.grid(row=2, column=0, pady=10, padx=10, sticky='ew')
+        
+        # Configure button frame grid
+        self.button_frame.grid_columnconfigure(0, weight=1)
+        self.button_frame.grid_columnconfigure(1, weight=1)
+        self.button_frame.grid_columnconfigure(2, weight=1)
+        self.button_frame.grid_columnconfigure(3, weight=1)
 
-# Creating functions
+        
+        # Add buttons with padding
+        self.add_button = tk.Button(
+            self.button_frame,
+            text='Add Task',
+            command=self.add_task
+        )
+        self.add_button.grid(row=0, column=0, padx=5, sticky='ew')
+        
+        self.delete_button = tk.Button(
+            self.button_frame,
+            text='Delete Task',
+            command=self.delete_task
+        )
+        self.delete_button.grid(row=0, column=1, padx=5, sticky='ew')
+        
+        self.clear_button = tk.Button(
+            self.button_frame,
+            text='Clear All',
+            command=self.clear_all
+        )
+        self.clear_button.grid(row=0, column=2, padx=5, sticky='ew')
 
-def update_selectionlist():
-    # Clear the current list
-    clear_selectionlist()
+        self.quit_button=tk.Button(
+            self.button_frame,
+            text="Exit",
+            command=self.quit
+        )
+        self.quit_button.grid(row=0,column=3,padx=5,sticky='ew')
+        
+        # Configure widget expansion and filling
+        self.configure_responsive_layout()
 
-    #update items to list
-    for task in tasks:
-        lb_tasks.insert("end", task)
+    def configure_responsive_layout(self):
+        # Configure listbox and scrollbar to expand and fill
+        self.listbox.grid(row=0, column=0, sticky='nsew')
+        
+        self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid_columnconfigure(0, weight=1)
 
-def clear_selectionlist():
-    lb_tasks.delete(0,"end")
+        # Configure entry box to expand horizontally
+        self.entry.grid(row=0, column=0, pady=10, padx=10, sticky='ew')
 
+        # Configure button frame to expand horizontally
+        self.button_frame.grid(row=2, column=0, pady=10, padx=10, sticky='ew')
+        self.button_frame.grid_columnconfigure(0, weight=1)
+        self.button_frame.grid_columnconfigure(1, weight=1)
+        self.button_frame.grid_columnconfigure(2, weight=1)
 
-def add_task():
-    # Get the task
-    task = txt_input.get()
-    # Append the task to list
-    if task != '':
-        tasks.append(task)
-        update_selectionlist()
-    else:
-        display['text'] = "Please enter a task!"
-    txt_input.delete(0,'end')
-
-
-def delete():
-    task = lb_tasks.get('active')
-    if task in tasks:
-        tasks.remove(task)
-    # Update list box
-    update_selectionlist()
-
-    display['text'] = "Task deleted!"
-
-def delete_all():
-    global tasks
-    # Clear the list
-    tasks = []
-
-    update_selectionlist()
-
-def choose_random():
-    task = random.choice(tasks)
-    display['text'] = task
-
-def number_of_task():
-    number_of_tasks = len(tasks)
-
-    msg = "Number of tasks : %s" %number_of_tasks
-    display['text'] = msg
-
-def exit():
-    quit()
+    def add_task(self):
+        task = self.entry.get()
+        if task != "":
+            self.listbox.insert(tk.END, task)
+            self.entry.delete(0, tk.END)
+        else:
+            messagebox.showwarning("Warning", "You must enter a task.")
     
+    def delete_task(self):
+        try:
+            selected_task_index = self.listbox.curselection()[0]
+            self.listbox.delete(selected_task_index)
+        except IndexError:
+            messagebox.showwarning("Warning", "You must select a task.")
+    
+    def clear_all(self):
+        self.listbox.delete(0, tk.END)
 
-#Create Buttons and List options
-
-title = tkinter.Label(window, text = "To-Do-List", bg='lightyellow')
-title.grid(row=0,column=1)
-
-
-display = tkinter.Label(window, text = "", bg='white')
-display.grid(row=0,column=1)
-
-
-txt_input = tkinter.Entry(window, width=15)
-txt_input.grid(row=1,column=1)
-
-
-btn_add_task = tkinter.Button(window, text = "Add Task", fg = 'black', bg = None, command = add_task)
-
-btn_add_task.grid(row=1,column=0)
-
-btn_delete = tkinter.Button(window, text = "Delete", fg = 'black', bg = None, command = delete)
-
-btn_delete.grid(row=2,column=0)
+    def quit(self):
+        self.listbox.quit()    
 
 
-btn_delete_all = tkinter.Button(window, text = "Delete All", fg = 'black', bg = None, command = delete_all)
-
-btn_delete_all.grid(row=3,column=0)
-
-
-btn_choose_random = tkinter.Button(window, text = "Choose Random", fg = 'black', bg = None, command = choose_random)
-
-btn_choose_random.grid(row=4,column=0)
-
-
-btn_number_of_task = tkinter.Button(window, text = "Number of Tasks", fg = 'black', bg = None, command = number_of_task)
-
-btn_number_of_task.grid(row=5,column=0)
-
-
-btn_close = tkinter.Button(window, text = "Exit", fg = 'white', bg = "red", command = exit)
-
-btn_close.grid(row=6,column=0)
-
-
-lb_tasks = tkinter.Listbox(window)
-lb_tasks.grid(row=2,column=1,rowspan=7)
-
-
-
-window.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = ToDoApp(root)
+    root.mainloop()
