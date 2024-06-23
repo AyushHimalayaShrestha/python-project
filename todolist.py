@@ -52,29 +52,33 @@ class ToDoApp:
         # Add buttons with padding
         self.add_button = tk.Button(
             self.button_frame,
-            text='Add Task',
-            command=self.add_task
+            text='Add',
+            command=self.add_task,
+            bg="green",
+            fg="white"
         )
         self.add_button.grid(row=0, column=0, padx=5, sticky='ew')
         
         self.delete_button = tk.Button(
             self.button_frame,
-            text='Delete Task',
+            text='Delete',
             command=self.delete_task
         )
         self.delete_button.grid(row=0, column=1, padx=5, sticky='ew')
         
-        self.clear_button = tk.Button(
+        self.reset_button = tk.Button(
             self.button_frame,
-            text='Clear All',
+            text='Reset',
             command=self.clear_all
         )
-        self.clear_button.grid(row=0, column=2, padx=5, sticky='ew')
+        self.reset_button.grid(row=0, column=2, padx=5, sticky='ew')
 
         self.quit_button=tk.Button(
             self.button_frame,
             text="Exit",
-            command=self.quit
+            command=self.quit,
+            bg="red",
+            fg="white"
         )
         self.quit_button.grid(row=0,column=3,padx=5,sticky='ew')
         
